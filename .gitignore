@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+ID_HW1/
+venv/
+.vscode/
