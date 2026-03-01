@@ -1,0 +1,17 @@
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from . import views
+
+"""
+URL configuration for the bookings app.
+Registers MovieViewSet, SeatViewSet, and BookingViewSet with the router.
+"""
+
+router = DefaultRouter()
+router.register(r'movies', views.MovieViewSet, basename='movie')
+router.register(r'seats', views.SeatViewSet, basename='seat')
+router.register(r'bookings', views.BookingViewSet, basename='booking')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
