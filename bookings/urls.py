@@ -4,7 +4,7 @@ from . import views
 
 """
 URL configuration for the bookings app.
-Separates API endpoints from template-based views.
+Includes both API endpoints and template-based views.
 """
 
 router = DefaultRouter()
@@ -13,9 +13,7 @@ router.register(r'seats', views.SeatViewSet, basename='seat')
 router.register(r'bookings', views.BookingViewSet, basename='booking')
 
 urlpatterns = [
-    # API endpoints
     path('api/', include(router.urls)),
-    # Template views
     path('movies/', views.movie_list, name='movie_list'),
     path('movies/<int:movie_id>/seats/', views.seat_booking, name='book_seat'),
     path('movies/<int:movie_id>/seats/<int:seat_id>/confirm/', views.confirm_booking, name='confirm_booking'),

@@ -1,0 +1,25 @@
+{% extends 'bookings/base.html' %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<!-- Booking history page -->
+<h2 class="mb-4">📋 My Booking History</h2>
+<table class="table table-striped shadow">
+    <thead class="table-dark">
+        <tr>
+            <th>Movie</th>
+            <th>Seat</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <!-- Individual booking row -->
+            <td>{{ booking.movie.title }}</td>
+            <td>{{ booking.seat.seat_number }}</td>
+            <td>{{ booking.booking_date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

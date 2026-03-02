@@ -72,7 +72,7 @@ def booking_history(request):
 
 def confirm_booking(request, movie_id, seat_id):
     """
-    Handles booking confirmation and marks the seat as booked.
+    View that handles the booking confirmation and marks the seat as booked.
     """
     movie = get_object_or_404(Movie, id=movie_id)
     seat = get_object_or_404(Seat, id=seat_id)
@@ -82,4 +82,4 @@ def confirm_booking(request, movie_id, seat_id):
         seat.save()
     return render(request, 'bookings/booking_history.html', {
         'bookings': Booking.objects.filter(user=request.user)
-    })
+   })
