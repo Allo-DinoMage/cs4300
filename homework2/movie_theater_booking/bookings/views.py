@@ -54,12 +54,24 @@ def movie_list(request):
 
 def seat_booking(request, movie_id):
     """
-    Template view that displays available seats for a specific movie.
+    Template view that displays available seats for a specific movie,
+    organized into rows by the first letter of the seat number.
     """
     movie = get_object_or_404(Movie, id=movie_id)
-    seats = Seat.objects.all()
-    return render(request, 'bookings/seat_booking.html', {'movie': movie, 'seats': seats})
-
+    seats = Seat.objects.all().order_by('seat_number')
+    
+    # Organize seats into rows by letter
+    rows = {}
+    for seat in seats:
+        row_letter = seat.seat_number[0]
+        if row_letter not in rows:
+            rows[row_letter] = []
+        rows[row_letter].append(seat)
+    
+    return render(request, 'bookings/seat_booking.html', {
+        'movie': movie,
+        'rows': rows
+    })
 
 @login_required
 def booking_history(request):

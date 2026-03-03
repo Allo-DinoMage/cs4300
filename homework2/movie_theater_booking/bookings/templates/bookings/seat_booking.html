@@ -1,23 +1,79 @@
 {% extends 'bookings/base.html' %}
 {% block title %}Book a Seat{% endblock %}
 {% block content %}
-<!-- Seat booking page -->
-<h2 class="mb-4">🎟 Book a Seat for {{ movie.title }}</h2>
-<div class="row">
-    {% for seat in seats %}
-    <div class="col-md-2 mb-3">
-        <div class="card text-center shadow">
-            <div class="card-body">
-                <!-- Seat status display -->
-                <h6>Seat {{ seat.seat_number }}</h6>
-                {% if seat.is_booked %}
-                    <span class="badge bg-danger">Booked</span>
-                {% else %}
-                    <a href="{% url 'confirm_booking' movie.id seat.id %}" class="btn btn-success btn-sm">Book</a>
-                {% endif %}
-            </div>
+
+<!-- Theater title -->
+<h2 class="text-center mb-4">🎬 {{ movie.title }}</h2>
+
+<!-- Screen -->
+<div class="text-center mb-4">
+    <div style="
+        background: linear-gradient(to bottom, #ffffff, #cccccc);
+        border-radius: 50%;
+        height: 30px;
+        width: 80%;
+        margin: 0 auto;
+        box-shadow: 0 4px 15px rgba(255,255,255,0.5);
+    "></div>
+    <p class="text-muted mt-1" style="font-size: 0.85rem;">SCREEN</p>
+</div>
+
+<!-- Legend -->
+<div class="d-flex justify-content-center gap-4 mb-4">
+    <span><span class="badge bg-success px-3 py-2">Available</span></span>
+    <span><span class="badge bg-danger px-3 py-2">Booked</span></span>
+</div>
+
+<!-- Seats arranged in rows -->
+<div class="container" style="max-width: 700px;">
+    {% regroup seats by seat_number|slice:':1' as seat_rows %}
+    {% for row in seat_rows %}
+    <div class="d-flex justify-content-center align-items-center mb-3 gap-2">
+        <!-- Row label -->
+        <span class="fw-bold me-2" style="width: 20px;">{{ row.grouper }}</span>
+        {% for seat in row.list %}
+        <div class="text-center">
+            {% if seat.is_booked %}
+                <!-- Booked seat -->
+                <div style="
+                    background-color: #dc3545;
+                    color: white;
+                    border-radius: 8px 8px 4px 4px;
+                    width: 42px;
+                    height: 42px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.7rem;
+                    cursor: not-allowed;
+                    box-shadow: 0 3px 0 #a71d2a;
+                ">{{ seat.seat_number }}</div>
+            {% else %}
+                <!-- Available seat -->
+                <a href="{% url 'confirm_booking' movie.id seat.id %}" style="text-decoration: none;">
+                    <div style="
+                        background-color: #198754;
+                        color: white;
+                        border-radius: 8px 8px 4px 4px;
+                        width: 42px;
+                        height: 42px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 0.7rem;
+                        cursor: pointer;
+                        box-shadow: 0 3px 0 #0f5132;
+                        transition: transform 0.1s;
+                    "
+                    onmouseover="this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.transform='scale(1)'"
+                    >{{ seat.seat_number }}</div>
+                </a>
+            {% endif %}
         </div>
+        {% endfor %}
     </div>
     {% endfor %}
 </div>
+
 {% endblock %}

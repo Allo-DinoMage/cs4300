@@ -1,3 +1,4 @@
+from django.views.generic import RedirectView
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from . import views
@@ -20,4 +21,5 @@ urlpatterns = [
     path('movies/<int:movie_id>/seats/', views.seat_booking, name='book_seat'),
     path('movies/<int:movie_id>/seats/<int:seat_id>/confirm/', views.confirm_booking, name='confirm_booking'),
     path('bookings/', views.booking_history, name='booking_history'),
+    path('', RedirectView.as_view(url='/movies/'), name='home'),
 ]
