@@ -394,3 +394,113 @@ class BookingAPITest(APITestCase):
         }
         response = self.client.post('/api/bookings/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_booking_seat_already_marked_booked(self):
+        """
+        Edge case: Test that booking a seat that is already marked as booked fails.
+        """
+        self.seat.is_booked = True
+        self.seat.save()
+
+        data = {
+            'movie': self.movie.id,
+            'seat': self.seat.id,
+        }
+
+        response = self.client.post('/api/bookings/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_booking_with_invalid_movie_id(self):
+        """
+        Edge case: Test that booking with a non-existent movie ID fails.
+        """
+        data = {
+            'movie': 9999,
+            'seat': self.seat.id,
+        }
+
+        response = self.client.post('/api/bookings/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_booking_with_invalid_seat_id(self):
+        """
+        Edge case: Test that booking with a non-existent seat ID fails.
+        """
+        data = {
+            'movie': self.movie.id,
+            'seat': 9999,
+        }
+
+        response = self.client.post('/api/bookings/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_user_cannot_book_same_seat_twice(self):
+        """
+        Edge case: Test that a user cannot book the same seat twice.
+        """
+        Booking.objects.create(
+            movie=self.movie,
+            seat=self.seat,
+            user=self.user
+        )
+
+        data = {
+            'movie': self.movie.id,
+            'seat': self.seat.id,
+        }
+
+        response = self.client.post('/api/bookings/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class AccountCreationAPITest(APITestCase):
+    """
+    Integration tests for account creation, focusing on edge cases.
+    """
+
+    def test_create_user_missing_username(self):
+        """
+        Edge case: Creating a user without a username should fail.
+        """
+        data = {
+            'password': 'StrongPassword123'
+        }
+
+        response = self.client.post('/accounts/signup/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_user_missing_password(self):
+        """
+        Edge case: Creating a user without a password should fail.
+        """
+        data = {
+            'username': 'newuser'
+        }
+
+        response = self.client.post('/accounts/signup/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_user_duplicate_username(self):
+        """
+        Edge case: Creating a user with a duplicate username should fail.
+        """
+        User.objects.create_user(username='duplicate', password='pass123')
+
+        data = {
+            'username': 'duplicate',
+            'password': 'anotherpass'
+        }
+
+        response = self.client.post('/api/register/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_user_very_long_username(self):
+        """
+        Edge case: Creating a user with an excessively long username should fail.
+        """
+        data = {
+            'username': 'a' * 300,
+            'password': 'StrongPassword123'
+        }
+
+        response = self.client.post('/accounts/signup/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
