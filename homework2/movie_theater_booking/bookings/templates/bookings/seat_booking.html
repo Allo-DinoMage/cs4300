@@ -26,12 +26,10 @@
 
 <!-- Seats arranged in rows -->
 <div class="container" style="max-width: 700px;">
-    {% regroup seats by seat_number|slice:':1' as seat_rows %}
-    {% for row in seat_rows %}
+    {% for row_letter, seats in rows.items %}
     <div class="d-flex justify-content-center align-items-center mb-3 gap-2">
-        <!-- Row label -->
-        <span class="fw-bold me-2" style="width: 20px;">{{ row.grouper }}</span>
-        {% for seat in row.list %}
+        <span class="fw-bold me-2" style="width: 20px;">{{ row_letter }}</span>
+        {% for seat in seats %}
         <div class="text-center">
             {% if seat.is_booked %}
                 <!-- Booked seat -->

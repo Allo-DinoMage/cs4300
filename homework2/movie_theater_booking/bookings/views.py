@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect
 from rest_framework import viewsets, permissions
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -81,7 +83,7 @@ def booking_history(request):
     bookings = Booking.objects.filter(user=request.user)
     return render(request, 'bookings/booking_history.html', {'bookings': bookings})
 
-
+@login_required
 def confirm_booking(request, movie_id, seat_id):
     """
     Handles booking confirmation and marks the seat as booked.
@@ -95,3 +97,16 @@ def confirm_booking(request, movie_id, seat_id):
     return render(request, 'bookings/booking_history.html', {
         'bookings': Booking.objects.filter(user=request.user)
     })
+def signup(request):
+    """
+    Allows a new user to create an account.
+    """
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/signup.html', {'form': form})
