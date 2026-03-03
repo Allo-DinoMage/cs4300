@@ -1,25 +1,119 @@
 {% extends 'bookings/base.html' %}
-{% block title %}My Bookings{% endblock %}
+{% block title %}My Bookings — TriassicPix{% endblock %}
 {% block content %}
-<!-- Booking history page -->
-<h2 class="mb-4">📋 My Booking History</h2>
-<table class="table table-striped shadow">
-    <thead class="table-dark">
+<h2 class="page-title">🦴 My Bookings</h2>
+
+{% if bookings %}
+<table class="dino-table">
+    <thead>
         <tr>
             <th>Movie</th>
             <th>Seat</th>
             <th>Date</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         {% for booking in bookings %}
-        <tr>
-            <!-- Individual booking row -->
-            <td>{{ booking.movie.title }}</td>
-            <td>{{ booking.seat.seat_number }}</td>
-            <td>{{ booking.booking_date }}</td>
+        <tr id="booking-{{ booking.id }}">
+            <td class="movie-name">{{ booking.movie.title }}</td>
+            <td><span class="seat-badge">{{ booking.seat.seat_number }}</span></td>
+            <td class="date-col">{{ booking.booking_date }}</td>
+            <td>
+                <button class="cancel-btn" onclick="cancelBooking({{ booking.id }})">Cancel</button>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">🦕</div>
+    <p>No bookings yet — the prehistoric seats await!</p>
+    <a href="/movies/" class="book-link">Browse Movies →</a>
+</div>
+{% endif %}
+
+<style>
+.dino-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.dino-table thead tr {
+    border-bottom: 1px solid rgba(74,124,89,0.3);
+}
+.dino-table th {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 400;
+}
+.dino-table td {
+    padding: 1rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+}
+.dino-table tr:hover td { background: rgba(74,124,89,0.05); }
+.movie-name { color: var(--text); font-weight: 500; }
+.seat-badge {
+    background: var(--surface2);
+    border: 1px solid rgba(74,124,89,0.3);
+    color: var(--green-bright);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+.date-col { color: var(--muted); font-size: 0.82rem; }
+.cancel-btn {
+    background: transparent;
+    border: 1px solid rgba(166,61,47,0.4);
+    color: #c06055;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+}
+.cancel-btn:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+}
+.empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--muted);
+}
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.4; }
+.empty-state p { margin-bottom: 1.5rem; }
+.book-link {
+    color: var(--green-bright);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+.book-link:hover { color: var(--gold); }
+</style>
+
+<script>
+function cancelBooking(bookingId) {
+    if (!confirm('Cancel this booking?')) return;
+    fetch(`/api/bookings/${bookingId}/`, {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+    }).then(response => {
+        if (response.status === 204) {
+            document.getElementById(`booking-${bookingId}`).remove();
+        } else {
+            alert('Failed to cancel. Please try again.');
+        }
+    });
+}
+</script>
 {% endblock %}

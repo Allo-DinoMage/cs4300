@@ -3,23 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Movie Theater{% endblock %}</title>
+    <title>{% block title %}TriassicPictures{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c8a84b;
+            --green: #4a7c59;
+            --green-bright: #6abf7b;
+            --bg: #0a0c0a;
+            --surface: #111411;
+            --surface2: #1a1e1a;
+            --text: #e8ede0;
+            --muted: #6b7a65;
+            --danger: #a63d2f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 0% 0%, #0d1a0e 0%, transparent 55%),
+                radial-gradient(ellipse at 100% 100%, #0a120a 0%, transparent 55%);
+        }
+        nav.cinebar {
+            background: rgba(10,12,10,0.96);
+            border-bottom: 1px solid rgba(74,124,89,0.25);
+            padding: 1rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .brand {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: var(--green-bright);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+        }
+        .brand span { color: var(--gold); }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--green-bright); }
+        .main-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        h2.page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--text);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        h2.page-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--green), transparent);
+            margin-left: 0.5rem;
+        }
+        .footer-mark {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 2rem;
+            font-size: 3rem;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+            transform: rotate(-20deg);
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">🎬 Movie Theater</a>
-            <div class="navbar-nav">
-                <a class="nav-link" href="/movies/">Movies</a>
-                <a class="nav-link" href="/bookings/">My Bookings</a>
-            </div>
+    <nav class="cinebar">
+        <a class="brand" href="/">🦕 Triassic<span>Pictures</span></a>
+        <div class="nav-links">
+            <a href="/movies/">Movies</a>
+            <a href="/bookings/">My Bookings</a>
         </div>
     </nav>
-    <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
+    <div class="main-content">
+        {% block content %}{% endblock %}
     </div>
+    <div class="footer-mark">🦶</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

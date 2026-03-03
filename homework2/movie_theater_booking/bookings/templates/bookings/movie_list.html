@@ -1,22 +1,92 @@
 {% extends 'bookings/base.html' %}
-{% block title %}Movie List{% endblock %}
+{% block title %}Now Showing — TriassicPix{% endblock %}
 {% block content %}
-<!-- Movie listing page -->
-<h2 class="mb-4">🎬 Available Movies</h2>
-<div class="row">
+<h2 class="page-title">🎬 Now Showing</h2>
+<div class="row g-4">
     {% for movie in movies %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow">
-            <div class="card-body">
-                <!-- Movie details -->
-                <h5 class="card-title">{{ movie.title }}</h5>
-                <p class="card-text">{{ movie.description }}</p>
-                <p class="text-muted">📅 {{ movie.release_date }} | ⏱ {{ movie.duration }} min</p>
-                <a href="{% url 'book_seat' movie.id %}" class="btn btn-primary">Book Now</a>
+    <div class="col-md-4">
+        <div class="movie-card">
+            <div class="movie-card-inner">
+                <div class="movie-era">🦖 Now Playing</div>
+                <h5 class="movie-title">{{ movie.title }}</h5>
+                <p class="movie-desc">{{ movie.description }}</p>
+                <div class="movie-meta">
+                    <span>📅 {{ movie.release_date }}</span>
+                    <span>⏱ {{ movie.duration }} min</span>
+                </div>
+                <a href="{% url 'book_seat' movie.id %}" class="book-btn">Book Seats →</a>
             </div>
         </div>
     </div>
+    {% empty %}
+    <p style="color: var(--muted)">No movies available right now. Check back soon!</p>
     {% endfor %}
 </div>
-{% endblock %}
 
+<style>
+.movie-card {
+    background: var(--surface);
+    border: 1px solid rgba(74,124,89,0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    height: 100%;
+}
+.movie-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(106,191,123,0.5);
+    box-shadow: 0 12px 40px rgba(74,124,89,0.15);
+}
+.movie-card-inner {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+}
+.movie-era {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-bright);
+    font-weight: 500;
+}
+.movie-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    color: var(--text);
+    line-height: 1.3;
+}
+.movie-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+}
+.movie-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+.book-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background: var(--green);
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.1s;
+    align-self: flex-start;
+}
+.book-btn:hover {
+    background: var(--green-bright);
+    color: #0a0c0a;
+    transform: translateX(2px);
+}
+</style>
+{% endblock %}

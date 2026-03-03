@@ -1,77 +1,115 @@
 {% extends 'bookings/base.html' %}
-{% block title %}Book a Seat{% endblock %}
+{% block title %}Pick Your Seat — {{ movie.title }}{% endblock %}
 {% block content %}
-
-<!-- Theater title -->
-<h2 class="text-center mb-4">🎬 {{ movie.title }}</h2>
+<h2 class="page-title">🦕 {{ movie.title }}</h2>
 
 <!-- Screen -->
-<div class="text-center mb-4">
-    <div style="
-        background: linear-gradient(to bottom, #ffffff, #cccccc);
-        border-radius: 50%;
-        height: 30px;
-        width: 80%;
-        margin: 0 auto;
-        box-shadow: 0 4px 15px rgba(255,255,255,0.5);
-    "></div>
-    <p class="text-muted mt-1" style="font-size: 0.85rem;">SCREEN</p>
+<div class="screen-wrap">
+    <div class="screen"></div>
+    <p class="screen-label">S C R E E N</p>
 </div>
 
 <!-- Legend -->
-<div class="d-flex justify-content-center gap-4 mb-4">
-    <span><span class="badge bg-success px-3 py-2">Available</span></span>
-    <span><span class="badge bg-danger px-3 py-2">Booked</span></span>
+<div class="legend">
+    <span class="legend-item"><span class="dot available"></span> Available</span>
+    <span class="legend-item"><span class="dot booked"></span> Taken</span>
 </div>
 
-<!-- Seats arranged in rows -->
-<div class="container" style="max-width: 700px;">
+<!-- Seats -->
+<div class="seat-grid">
     {% for row_letter, seats in rows.items %}
-    <div class="d-flex justify-content-center align-items-center mb-3 gap-2">
-        <span class="fw-bold me-2" style="width: 20px;">{{ row_letter }}</span>
+    <div class="seat-row">
+        <span class="row-label">{{ row_letter }}</span>
         {% for seat in seats %}
-        <div class="text-center">
             {% if seat.is_booked %}
-                <!-- Booked seat -->
-                <div style="
-                    background-color: #dc3545;
-                    color: white;
-                    border-radius: 8px 8px 4px 4px;
-                    width: 42px;
-                    height: 42px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 0.7rem;
-                    cursor: not-allowed;
-                    box-shadow: 0 3px 0 #a71d2a;
-                ">{{ seat.seat_number }}</div>
+                <div class="seat booked" title="Already booked">{{ seat.seat_number }}</div>
             {% else %}
-                <!-- Available seat -->
-                <a href="{% url 'confirm_booking' movie.id seat.id %}" style="text-decoration: none;">
-                    <div style="
-                        background-color: #198754;
-                        color: white;
-                        border-radius: 8px 8px 4px 4px;
-                        width: 42px;
-                        height: 42px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 0.7rem;
-                        cursor: pointer;
-                        box-shadow: 0 3px 0 #0f5132;
-                        transition: transform 0.1s;
-                    "
-                    onmouseover="this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.transform='scale(1)'"
-                    >{{ seat.seat_number }}</div>
-                </a>
+                <a href="{% url 'confirm_booking' movie.id seat.id %}" class="seat available" title="Book {{ seat.seat_number }}">{{ seat.seat_number }}</a>
             {% endif %}
-        </div>
         {% endfor %}
     </div>
     {% endfor %}
 </div>
 
+<style>
+.screen-wrap { text-align: center; margin-bottom: 2rem; }
+.screen {
+    background: linear-gradient(to bottom, rgba(106,191,123,0.3), transparent);
+    border-top: 2px solid rgba(106,191,123,0.5);
+    height: 24px;
+    width: 70%;
+    margin: 0 auto;
+    border-radius: 50% 50% 0 0;
+}
+.screen-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    margin-top: 0.4rem;
+}
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+.dot { width: 14px; height: 14px; border-radius: 4px; }
+.dot.available { background: var(--green); }
+.dot.booked { background: #2a2a2a; border: 1px solid #444; }
+.seat-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+.seat-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.row-label {
+    width: 22px;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-right: 0.5rem;
+    font-weight: 500;
+}
+.seat {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px 8px 5px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.seat.available {
+    background: var(--green);
+    color: var(--text);
+    box-shadow: 0 3px 0 #2d5a3d;
+    cursor: pointer;
+}
+.seat.available:hover {
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 6px 0 #2d5a3d, 0 0 15px rgba(74,124,89,0.4);
+    color: white;
+}
+.seat.booked {
+    background: var(--surface2);
+    color: #3a3a3a;
+    box-shadow: 0 3px 0 #111;
+    cursor: not-allowed;
+}
+</style>
 {% endblock %}
